@@ -9,9 +9,9 @@ export type HeadToHeadPitchLineGroupProps = {
 
 const HeadToHeadPitchLineGroup: React.FC<HeadToHeadPitchLineGroupProps> = (props) => {
     const { height, width } = props
-    const pitchHeight = width * .475
+    const pitchHeight = height * .7
     const margin = {
-      top: height * .05,
+      top: height * .15,
       left: width * .15,
     };
     const cornerRadius = width * .0165
@@ -22,7 +22,7 @@ const HeadToHeadPitchLineGroup: React.FC<HeadToHeadPitchLineGroupProps> = (props
             <rect
                 x={0}
                 y={0}
-                height={pitchHeight - margin.top * 2}
+                height={pitchHeight}
                 width={width - margin.left * 2}
                 stroke={'white'}
                 strokeWidth={3}
@@ -33,21 +33,21 @@ const HeadToHeadPitchLineGroup: React.FC<HeadToHeadPitchLineGroupProps> = (props
                 x1={width * .5 - margin.left}
                 y1={0}
                 x2={width * .5 - margin.left}
-                y2={pitchHeight - margin.top * 2}
+                y2={pitchHeight}
                 stroke={'white'}
                 strokeWidth={3}
             />
             {/* kickoff circle */}
             <circle
                 cx={width * .5 - margin.left}
-                cy={pitchHeight * .5 - margin.top}
+                cy={pitchHeight * .5}
                 fill={'white'}
-                r={5}
+                r={pitchHeight * .01}
             />
             {/* center circle */}
             <circle
                 cx={width * .5 - margin.left}
-                cy={pitchHeight * .5 - margin.top}
+                cy={pitchHeight * .5}
                 fill={'none'}
                 stroke={'white'}
                 strokeWidth={3}
@@ -57,7 +57,7 @@ const HeadToHeadPitchLineGroup: React.FC<HeadToHeadPitchLineGroupProps> = (props
             <rect
                 x={width - margin.left * 2 - width * .04}
                 y={pitchHeight * .325}
-                height={pitchHeight - margin.top * 2 - (pitchHeight * .325 * 2)}
+                height={pitchHeight - (pitchHeight * .325 * 2)}
                 width={width * .04}
                 stroke={'white'}
                 strokeWidth={3}
@@ -67,7 +67,7 @@ const HeadToHeadPitchLineGroup: React.FC<HeadToHeadPitchLineGroupProps> = (props
             <rect
                 x={width - margin.left * 2 - width * .115}
                 y={pitchHeight * .175}
-                height={pitchHeight - margin.top * 2 - (pitchHeight * .175 * 2)}
+                height={pitchHeight - (pitchHeight * .175 * 2)}
                 width={width * .115}
                 stroke={'white'}
                 strokeWidth={3}
@@ -76,15 +76,15 @@ const HeadToHeadPitchLineGroup: React.FC<HeadToHeadPitchLineGroupProps> = (props
             {/* right penalty spot */}
             <circle
                 fill={'white'}
-                r={4}
+                r={pitchHeight * .0075}
                 cx={width - margin.left * 2 - width * .075}
-                cy={pitchHeight * .5 - margin.top}
+                cy={pitchHeight * .5}
             />
             {/* left penalty area*/}
             <rect
                 x={0}
                 y={pitchHeight * .175}
-                height={pitchHeight - margin.top * 2 - (pitchHeight * .175 * 2)}
+                height={pitchHeight - (pitchHeight * .175 * 2)}
                 width={width * .115}
                 stroke={'white'}
                 strokeWidth={3}
@@ -94,7 +94,7 @@ const HeadToHeadPitchLineGroup: React.FC<HeadToHeadPitchLineGroupProps> = (props
             <rect
                 x={0}
                 y={pitchHeight * .325}
-                height={pitchHeight - margin.top * 2 - (pitchHeight * .325 * 2)}
+                height={pitchHeight - (pitchHeight * .325 * 2)}
                 width={width * .04}
                 stroke={'white'}
                 strokeWidth={3}
@@ -103,9 +103,9 @@ const HeadToHeadPitchLineGroup: React.FC<HeadToHeadPitchLineGroupProps> = (props
             {/* left penalty spot */}
             <circle
                 fill={'white'}
-                r={4}
+                r={pitchHeight * .0075}
                 cx={width * .075}
-                cy={pitchHeight * .5 - margin.top}
+                cy={pitchHeight * .5}
             />
             {/* top left corner */}
             <path d={`M ${cornerRadius} 0 
@@ -128,7 +128,7 @@ const HeadToHeadPitchLineGroup: React.FC<HeadToHeadPitchLineGroupProps> = (props
                 />
             </Group>
             {/* bottom left corner */}
-            <Group top={pitchHeight - margin.top * 2}>
+            <Group top={pitchHeight}>
                 <Arc
                 startAngle={0}
                 endAngle={1.5}
@@ -142,7 +142,7 @@ const HeadToHeadPitchLineGroup: React.FC<HeadToHeadPitchLineGroupProps> = (props
                 />
             </Group>
             {/* bottom right corner */}
-            <Group top={pitchHeight - margin.top * 2} left={width - margin.left * 2}>
+            <Group top={pitchHeight} left={width - margin.left * 2}>
                 <Arc
                 startAngle={0}
                 endAngle={-1.5}

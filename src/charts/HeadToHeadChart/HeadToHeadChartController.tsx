@@ -1,4 +1,4 @@
-import { ParentSize, ScaleSVG } from '@visx/responsive'
+import { ParentSize } from '@visx/responsive'
 import React from 'react'
 import HeadToHeadChart from './HeadToHeadChart'
 
