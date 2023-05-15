@@ -64,7 +64,8 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
                 ...player,
                 radius: height * .015,
                 x: width * .15,
-                y: height * .04 + i * (height * .04)
+                y: height * .04 + i * (height * .04),
+                isNameShowing: false
             }
         })
         return mappedPlayers
@@ -84,13 +85,20 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
         [width, height],
       );
 
+    const isShowingName = (d: any, isShowing: boolean) => {
+        console.log(isShowing)
+        const playerIndex = homePlayers.findIndex((player: PlayerInfo) => player.name === d.name)
+        const updatedPlayers = homePlayers
+        updatedPlayers[playerIndex].isNameShowing = isShowing
+        setHomePlayers(updatedPlayers)
+        return
+    }
+
     useEffect(() => {
         setAwayPlayers(mapAwayPlayerLocations(getPlayers(awayTeam)))
         setHomePlayers(mapHomePlayerLocations(getPlayers(homeTeam)))
     }, [height])
 
-    console.log(homePlayers)
-    console.log(awayPlayers)
     return (
         height !== undefined ? 
 
@@ -118,8 +126,7 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
                     x={d.x}
                     y={d.y}
                     onDragStart={() => {
-
-                    setHomePlayers(raise(homePlayers, i));
+                        setHomePlayers(raise(homePlayers, i));
                     }}
                 >
                     {({ dragStart, dragEnd, dragMove, isDragging, x, y, dx, dy }) => (
@@ -140,8 +147,10 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
                                 onTouchStart={dragStart}
                                 onTouchMove={dragMove}
                                 onTouchEnd={dragEnd}
+                                onMouseOver={() => isShowingName(d, true)}
+                                onMouseOut={() => isShowingName(d, false)}
                             />
-                            <text 
+                            {d.isNameShowing && <text 
                                 x={x} 
                                 y={y !== undefined ? y + d.radius * 2.5 : 0}
                                 dominantBaseline={'middle'}
@@ -157,7 +166,7 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
                                 fill={'white'}
                             >
                                 {d.name}
-                            </text>
+                            </text>}
                         </Group>
                     )}
                 </Drag>
