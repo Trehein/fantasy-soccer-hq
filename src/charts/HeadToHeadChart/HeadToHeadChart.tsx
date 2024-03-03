@@ -6,7 +6,7 @@ import { TeamEnum } from '../../data/TeamEnum'
 import { scaleOrdinal } from '@visx/scale';
 import { LinearGradient } from '@visx/gradient';
 import { Drag, raise } from '@visx/drag';
-import { Group } from '@visx/group';
+import PlayerGroup from '../../components/PlayerGroup'
 
 export type HeadToHeadChartProps = {
     width: number,
@@ -35,11 +35,11 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
     const { width, awayTeam, homeTeam } = props
     const height = width * (2/3)
 
-    const starterBall = {
-        r: 5,
-        x: width * .5,
-        y: height * .5
-    }
+    // const starterBall = {
+    //     r: 5,
+    //     x: width * .5,
+    //     y: height * .5
+    // }
 
     const getPlayers = (club: TeamEnum) => {
         return playerData.filter((player: PlayerInfo) => { 
@@ -51,8 +51,10 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
         const mappedPlayers = players.map((player: PlayerInfo, i: number) => {
             return {
                 ...player,
+                radius: height * .015,
                 x: width * .85,
-                y: height * .15 + i * (height * 0.15)
+                y: height * .04 + i * (height * 0.04),
+                isNameShowing: false
             }
         })
         return mappedPlayers
@@ -71,33 +73,34 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
         return mappedPlayers
     }
 
-    const [homePlayers, setHomePlayers] = useState(mapHomePlayerLocations(getPlayers(homeTeam)))
-    const [awayPlayers, setAwayPlayers] = useState(mapAwayPlayerLocations(getPlayers(awayTeam)))
-    const [ball, setBall] = useState([starterBall])
+    const [players, setPlayers] = useState([...mapHomePlayerLocations(getPlayers(homeTeam)), ...mapAwayPlayerLocations(getPlayers(awayTeam))])
+    // const [ball, setBall] = useState([starterBall])
+
 
     const homeColorScale = useMemo(
         () =>
           scaleOrdinal({
             range: colors,
-            domain: homePlayers.map((d) => d.name),
+            domain: players.map((d) => d.name),
           }),
         // eslint-disable-next-line react-hooks/exhaustive-deps
         [width, height],
       );
 
     const isShowingName = (d: any, isShowing: boolean) => {
-        console.log(isShowing)
-        const playerIndex = homePlayers.findIndex((player: PlayerInfo) => player.name === d.name)
-        const updatedPlayers = homePlayers
+        const playerIndex = players.findIndex((player: PlayerInfo) => player.name === d.name)
+        const updatedPlayers = players
         updatedPlayers[playerIndex].isNameShowing = isShowing
-        setHomePlayers(updatedPlayers)
+        setPlayers(updatedPlayers)
         return
     }
 
     useEffect(() => {
-        setAwayPlayers(mapAwayPlayerLocations(getPlayers(awayTeam)))
-        setHomePlayers(mapHomePlayerLocations(getPlayers(homeTeam)))
-    }, [height])
+        setPlayers([...mapHomePlayerLocations(getPlayers(homeTeam)), ...mapAwayPlayerLocations(getPlayers(awayTeam))])
+    // eslint-disable-next-line
+    }, [height, awayTeam, homeTeam])
+
+    
 
     return (
         height !== undefined ? 
@@ -110,15 +113,22 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
             <rect 
                 x={0}
                 y={0}
-                fill={'green'}
-                height={height}
+                fill={'#00a330'}
+                height={height * .5}
+                width={width}
+            />
+            <rect
+                x={0}
+                y={height * .5}
+                fill={'#016f27'}
+                height={height * .5}
                 width={width}
             />
             <HeadToHeadPitchLineGroup 
                 height={height}
                 width={width}
             />
-            {homePlayers.map((d, i) => (
+            {players.map((d, i) => (
                 <Drag
                     key={`drag-${d.name}`}
                     width={width}
@@ -126,48 +136,27 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
                     x={d.x}
                     y={d.y}
                     onDragStart={() => {
-                        setHomePlayers(raise(homePlayers, i));
+                        setPlayers(raise(players, i));
                     }}
                 >
                     {({ dragStart, dragEnd, dragMove, isDragging, x, y, dx, dy }) => (
-                        <Group>
-                            <circle
-                                key={`dot-${d.name}`}
-                                cx={x}
-                                cy={y}
-                                r={isDragging ? d.radius + 1 : d.radius}
-                                fill={isDragging ? 'url(#stroke)' : homeColorScale(d.name)}
-                                transform={`translate(${dx}, ${dy})`}
-                                fillOpacity={0.9}
-                                stroke={isDragging ? 'white' : 'transparent'}
-                                strokeWidth={2}
-                                onMouseMove={dragMove}
-                                onMouseUp={dragEnd}
-                                onMouseDown={dragStart}
-                                onTouchStart={dragStart}
-                                onTouchMove={dragMove}
-                                onTouchEnd={dragEnd}
-                                onMouseOver={() => isShowingName(d, true)}
-                                onMouseOut={() => isShowingName(d, false)}
-                            />
-                            {d.isNameShowing && <text 
-                                x={x} 
-                                y={y !== undefined ? y + d.radius * 2.5 : 0}
-                                dominantBaseline={'middle'}
-                                textAnchor={'middle'}
-                                transform={`translate(${dx}, ${dy})`}
-                                onMouseMove={dragMove}
-                                onMouseUp={dragEnd}
-                                onMouseDown={dragStart}
-                                onTouchStart={dragStart}
-                                onTouchMove={dragMove}
-                                onTouchEnd={dragEnd}
-                                cursor={'pointer'}
-                                fill={'white'}
-                            >
-                                {d.name}
-                            </text>}
-                        </Group>
+                        <PlayerGroup 
+                            d={{
+                                name: d.name,
+                                radius: isDragging ? d.radius + 1 : d.radius,
+                                isNameShowing: d.isNameShowing
+                            }} 
+                            x={x ? x : 0} 
+                            dx={dx ? dx : 0} 
+                            y={y ? y : 0} 
+                            dy={dy ? dy : 0} 
+                            isDragging={isDragging} 
+                            dragMove={dragMove} 
+                            dragStart={dragStart}
+                            dragEnd={dragEnd} 
+                            isShowingName={isShowingName} 
+                            homeColorScale={homeColorScale}                        
+                        />
                     )}
                 </Drag>
             ))}
