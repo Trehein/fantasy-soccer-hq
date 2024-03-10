@@ -7,8 +7,7 @@ import { scaleOrdinal } from '@visx/scale';
 import { LinearGradient } from '@visx/gradient';
 import { Drag, raise } from '@visx/drag';
 import PlayerGroup from '../../components/PlayerGroup'
-import { BiFootball } from "react-icons/bi";
-import { IconContext } from "react-icons";
+import Ball from '../../components/Ball'
 
 export type HeadToHeadChartProps = {
     width: number,
@@ -36,12 +35,6 @@ const colors = [
 const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
     const { width, awayTeam, homeTeam } = props
     const height = width * (2/3)
-
-    // const starterBall = {
-    //     r: 5,
-    //     x: width * .5,
-    //     y: height * .5
-    // }
 
     const getPlayers = (club: TeamEnum) => {
         return playerData.filter((player: PlayerInfo) => { 
@@ -76,8 +69,6 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
     }
 
     const [players, setPlayers] = useState([...mapHomePlayerLocations(getPlayers(homeTeam)), ...mapAwayPlayerLocations(getPlayers(awayTeam))])
-    // const [ball, setBall] = useState([starterBall])
-
 
     const homeColorScale = useMemo(
         () =>
@@ -97,7 +88,7 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
         return
     }
 
-    const [ballData, setBallData] = useState({
+    const [ballState, setBallState] = useState({
         cx: width * .5,
         cy: height * .5,
         r: height * .04,
@@ -106,12 +97,10 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
 
     useEffect(() => {
         setPlayers([...mapHomePlayerLocations(getPlayers(homeTeam)), ...mapAwayPlayerLocations(getPlayers(awayTeam))])
-        setBallData({...ballData, cx: (width * .5) - ((height * .04) * .5), cy: (height * .5) - ((height * .04) * .5), r: height * .04})
+        setBallState({...ballState, cx: (width * .5) - ((height * .04) * .5), cy: (height * .5) - ((height * .04) * .5), r: height * .04})
         // eslint-disable-next-line
     }, [height, awayTeam, homeTeam])
 
-
-    console.log(ballData)
 
     return (
         height !== undefined ? 
@@ -175,29 +164,11 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
                 </Drag>
             ))}
 
-            {/* ball */}
-            <IconContext.Provider value={{ color: "black", size: `${ballData.r}px` }}>
-                <g 
-                    transform={`translate(${ballData.cx} ${ballData.cy})`}
-                    onMouseDown={() => {setBallData({...ballData, isBeingDragged: true})}}
-                    onMouseUp={() => {setBallData({...ballData, isBeingDragged: false})}}
-                    onMouseOut={() => {setBallData({...ballData, isBeingDragged: false})}}
-                    onMouseMove={(e) => {
-                        if (ballData.isBeingDragged) {
-                            setBallData({...ballData, cx: e.nativeEvent.offsetX - (ballData.r * .5), cy: e.nativeEvent.offsetY - (ballData.r * .5)})
-                        }
-                    }}
-                    // x={ballData.cx}
-                >
-                    <circle 
-                        r={ballData.r * .5}
-                        cx={(ballData.r * .5)}
-                        cy={(ballData.r * .5)}
-                        fill={'white'}
-                    />
-                    <BiFootball />
-                </g>
-            </IconContext.Provider>
+            <Ball 
+                ballState={ballState}
+                setBallState={setBallState}
+            />
+
         </ScaleSVG>
         :
         <></>
