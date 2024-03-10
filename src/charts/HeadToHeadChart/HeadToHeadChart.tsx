@@ -7,6 +7,8 @@ import { scaleOrdinal } from '@visx/scale';
 import { LinearGradient } from '@visx/gradient';
 import { Drag, raise } from '@visx/drag';
 import PlayerGroup from '../../components/PlayerGroup'
+import { BiFootball } from "react-icons/bi";
+import { IconContext } from "react-icons";
 
 export type HeadToHeadChartProps = {
     width: number,
@@ -98,16 +100,18 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
     const [ballData, setBallData] = useState({
         cx: width * .5,
         cy: height * .5,
-        r: 10,
+        r: height * .015,
         isBeingDragged: false
     })
 
     useEffect(() => {
         setPlayers([...mapHomePlayerLocations(getPlayers(homeTeam)), ...mapAwayPlayerLocations(getPlayers(awayTeam))])
-        setBallData({...ballData, cx: width * .5, cy: height * .5})
+        setBallData({...ballData, cx: width * .5, cy: height * .5, r: height * .015})
         // eslint-disable-next-line
     }, [height, awayTeam, homeTeam])
 
+
+    console.log(ballData)
 
     return (
         height !== undefined ? 
@@ -172,19 +176,22 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
             ))}
 
             {/* ball */}
-            <circle 
-                cx={ballData.cx}
-                cy={ballData.cy}
-                r={ballData.r}
-                fill={'salmon'}                
-                onMouseDown={() => {setBallData({...ballData, isBeingDragged: true})}}
-                onMouseUp={() => {setBallData({...ballData, isBeingDragged: false})}}
-                onMouseMove={(e) => {
-                    if (ballData.isBeingDragged) {
-                        setBallData({...ballData, cx: e.nativeEvent.offsetX, cy: e.nativeEvent.offsetY})
-                    }
-                }}
-            />
+            <IconContext.Provider value={{ color: "black", size: `${25}px` }}>
+                <g 
+                    transform={`translate(${ballData.cx} ${ballData.cy})`}
+                    onMouseDown={() => {setBallData({...ballData, isBeingDragged: true})}}
+                    onMouseUp={() => {setBallData({...ballData, isBeingDragged: false})}}
+                    onMouseOut={() => {setBallData({...ballData, isBeingDragged: false})}}
+                    onMouseMove={(e) => {
+                        if (ballData.isBeingDragged) {
+                            setBallData({...ballData, cx: e.nativeEvent.offsetX - 12.5, cy: e.nativeEvent.offsetY - 12.5})
+                        }
+                    }}
+                    // x={ballData.cx}
+                >
+                    <BiFootball />
+                </g>
+            </IconContext.Provider>
         </ScaleSVG>
         :
         <></>
