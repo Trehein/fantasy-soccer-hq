@@ -100,13 +100,13 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
     const [ballData, setBallData] = useState({
         cx: width * .5,
         cy: height * .5,
-        r: height * .015,
+        r: height * .04,
         isBeingDragged: false
     })
 
     useEffect(() => {
         setPlayers([...mapHomePlayerLocations(getPlayers(homeTeam)), ...mapAwayPlayerLocations(getPlayers(awayTeam))])
-        setBallData({...ballData, cx: width * .5, cy: height * .5, r: height * .015})
+        setBallData({...ballData, cx: (width * .5) - ((height * .04) * .5), cy: (height * .5) - ((height * .04) * .5), r: height * .04})
         // eslint-disable-next-line
     }, [height, awayTeam, homeTeam])
 
@@ -176,7 +176,7 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
             ))}
 
             {/* ball */}
-            <IconContext.Provider value={{ color: "black", size: `${25}px` }}>
+            <IconContext.Provider value={{ color: "black", size: `${ballData.r}px` }}>
                 <g 
                     transform={`translate(${ballData.cx} ${ballData.cy})`}
                     onMouseDown={() => {setBallData({...ballData, isBeingDragged: true})}}
@@ -184,11 +184,17 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
                     onMouseOut={() => {setBallData({...ballData, isBeingDragged: false})}}
                     onMouseMove={(e) => {
                         if (ballData.isBeingDragged) {
-                            setBallData({...ballData, cx: e.nativeEvent.offsetX - 12.5, cy: e.nativeEvent.offsetY - 12.5})
+                            setBallData({...ballData, cx: e.nativeEvent.offsetX - (ballData.r * .5), cy: e.nativeEvent.offsetY - (ballData.r * .5)})
                         }
                     }}
                     // x={ballData.cx}
                 >
+                    <circle 
+                        r={ballData.r * .5}
+                        cx={(ballData.r * .5)}
+                        cy={(ballData.r * .5)}
+                        fill={'white'}
+                    />
                     <BiFootball />
                 </g>
             </IconContext.Provider>
