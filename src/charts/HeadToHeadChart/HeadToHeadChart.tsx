@@ -95,12 +95,19 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
         return
     }
 
+    const [ballData, setBallData] = useState({
+        cx: width * .5,
+        cy: height * .5,
+        r: 10,
+        isBeingDragged: false
+    })
+
     useEffect(() => {
         setPlayers([...mapHomePlayerLocations(getPlayers(homeTeam)), ...mapAwayPlayerLocations(getPlayers(awayTeam))])
-    // eslint-disable-next-line
+        setBallData({...ballData, cx: width * .5, cy: height * .5})
+        // eslint-disable-next-line
     }, [height, awayTeam, homeTeam])
 
-    
 
     return (
         height !== undefined ? 
@@ -110,6 +117,7 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
             width={width}
         >
             <LinearGradient id="stroke" from="#ff00a5" to="#ffc500" />
+
             <rect 
                 x={0}
                 y={0}
@@ -128,6 +136,8 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
                 height={height}
                 width={width}
             />
+
+
             {players.map((d, i) => (
                 <Drag
                     key={`drag-${d.name}`}
@@ -160,6 +170,21 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
                     )}
                 </Drag>
             ))}
+
+            {/* ball */}
+            <circle 
+                cx={ballData.cx}
+                cy={ballData.cy}
+                r={ballData.r}
+                fill={'salmon'}                
+                onMouseDown={() => {setBallData({...ballData, isBeingDragged: true})}}
+                onMouseUp={() => {setBallData({...ballData, isBeingDragged: false})}}
+                onMouseMove={(e) => {
+                    if (ballData.isBeingDragged) {
+                        setBallData({...ballData, cx: e.nativeEvent.offsetX, cy: e.nativeEvent.offsetY})
+                    }
+                }}
+            />
         </ScaleSVG>
         :
         <></>
