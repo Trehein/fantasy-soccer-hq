@@ -1,9 +1,11 @@
-import HeadToHeadPage from "./pages/HeadToHeadPage";
+// import HeadToHeadPage from "./pages/HeadToHeadPage";
+import SingleSidePage from "./pages/SingleSidePage";
 
 function App() {
   return (
     <div>
-      <HeadToHeadPage />
+      {/* <HeadToHeadPage /> */}
+      <SingleSidePage />
     </div>
   );
 }

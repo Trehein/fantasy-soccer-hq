@@ -69,7 +69,12 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
     }
 
     const [players, setPlayers] = useState([...mapHomePlayerLocations(getPlayers(homeTeam)), ...mapAwayPlayerLocations(getPlayers(awayTeam))])
-
+    // const [ballState, setBallState] = useState({
+    //     cx: width * .5,
+    //     cy: height * .5,
+    //     r: height * .04,
+    //     isBeingDragged: false
+    // })
     const homeColorScale = useMemo(
         () =>
           scaleOrdinal({
@@ -88,16 +93,11 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
         return
     }
 
-    const [ballState, setBallState] = useState({
-        cx: width * .5,
-        cy: height * .5,
-        r: height * .04,
-        isBeingDragged: false
-    })
+
 
     useEffect(() => {
         setPlayers([...mapHomePlayerLocations(getPlayers(homeTeam)), ...mapAwayPlayerLocations(getPlayers(awayTeam))])
-        setBallState({...ballState, cx: (width * .5) - ((height * .04) * .5), cy: (height * .5) - ((height * .04) * .5), r: height * .04})
+        // setBallState({...ballState, cx: (width * .5) - ((height * .04) * .5), cy: (height * .5) - ((height * .04) * .5), r: height * .04})
         // eslint-disable-next-line
     }, [height, awayTeam, homeTeam])
 
@@ -164,10 +164,10 @@ const HeadToHeadChart: React.FC<HeadToHeadChartProps> = (props) => {
                 </Drag>
             ))}
 
-            <Ball 
+            {/* <Ball 
                 ballState={ballState}
                 setBallState={setBallState}
-            />
+            /> */}
 
         </ScaleSVG>
         :

@@ -2,14 +2,33 @@ import React from 'react'
 import HeadToHeadChartController from '../charts/HeadToHeadChart/HeadToHeadChartController'
 import { TeamEnum } from '../data/TeamEnum'
 
+export const headToHeadPageStyles = () => {
+    return {
+        headToHeadChartContainer: {
+            width: '70%',
+        },
+        pageContainer: {
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center'
+        }
+    }
+}
+
 const HeadToHeadPage: React.FC = () => {
+    const styles = headToHeadPageStyles()
+
+
     return (
-        <div style={{width: '100%', height: '100vh'}}>
-            <HeadToHeadChartController 
-                awayTeam={TeamEnum.ManchesterCity}
-                homeTeam={TeamEnum.Liverpool}
-            />
+        <div style={styles.pageContainer}>
+            <div style={styles.headToHeadChartContainer}>
+                <HeadToHeadChartController 
+                    awayTeam={TeamEnum.ManchesterCity}
+                    homeTeam={TeamEnum.Liverpool}
+                />
+            </div>
         </div>
+
     )
 }
 

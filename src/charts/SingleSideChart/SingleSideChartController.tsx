@@ -1,10 +1,12 @@
 import React from 'react'
+import SingleSidedChart from './SingleSideChart'
 
 const SingleSideChartController: React.FC = () => {
+    const height = 800
     return (
-        <div>
-
-        </div>
+        <SingleSidedChart
+            height={height}
+        />
     )
 }
 
